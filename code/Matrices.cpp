@@ -130,7 +130,7 @@ namespace Matrices
 	{
 		// xShift  xShift  xShift  ...
 		// yShift  yShift  yShift  ...
-		for (int i = 0 i < nCols; i++)
+		for (int i = 0; i < nCols; i++)
 		{
 			a[0][i] = xShift;
 			a[1][i] = yShift;

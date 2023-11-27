@@ -1,11 +1,89 @@
 #include "Particle.h"
 
-Particle::Particle(RenderTarget& target, int numPoints, Vector2i mouseClickPosition)
+/*
+* - This constructor will be responsible for generating a randomized shape with numPoints vertices,
+* centered on mouseClickPosition mapped to the Cartesian plane,
+* which is centered at(0, 0) instead of(width / 2, height / 2).
+*     - It will also give the particle initial vertical, horizontal, and angular / spin velocities
+*     - Each vertex will be stored in the Matrix member variable m_A as a column vector
+* 
+* - The Matrix member variable m_A does not have a default constructor and thus must 
+* be constructed in an initialization list before the code for the constructor begins:
+*     - Particle(...) : m_A(2, numPoints)
+*/
+Particle::Particle(RenderTarget& target, int numPoints, Vector2i mouseClickPosition) : m_A(2, numPoints)
 {
+    // Initialize m_ttl with the global constant TTL, which gives it a time to live of 5 seconds
+    m_ttl = TTL;
 
+    // Initialize m_numPoints with numPoints
+    m_numPoints = numPoints;
+
+    // Initialize m_radiansPerSec to a random angular velocity in the range [0:PI]
+        // You can generate a random fraction between [0:1) by calling (float)rand() / (RAND_MAX)
+        // Multiply this fraction by PI (this is a constant for pi, declared in Particle.h
+    m_radiansPerSec = ((float)rand() / (RAND_MAX)) * M_PI;
+
+    /* - m_cartesianPlane will be used to map between monitor pixel coordinates, that are 
+    *  centered at (960, 540) for a 1080p monitor, to Cartesian coordinates that are centered 
+    *  about the origin (0,0), so our Matrix algebra will work correctly
+    */
+    // Call setCenter(0,0)
+    m_cartesianPlane.setCenter(0, 0);
+
+    // Call setSize(target.getSize().x, (-1.0) * target.getSize().y)
+        // This will initialize its width and height to the size of the RenderWindow stored in target and invert the y - axis
+    m_cartesianPlane.setSize(target.getSize().x, (-1.0) * target.getSize().y);
+
+    // Store the location of the center of this particle on the Cartesian plane in m_centerCoordinate 
+        // Use mapPixelToCoords with m_cartesianPlane to map mouseClickPosition to the Cartesian plane and store it in m_centerCoordinate
+    m_centerCoordinate = target.mapPixelToCoords(mouseClickPosition, m_cartesianPlane);
+
+    // Assign m_vx and m_vy to random pixel velocities 
+        // These will be the initial horizontal and vertical velocities of our particle
+        // Somewhere between 100 and 500 worked for me, but you can experiment with this
+        // If you want m_vx to be randomly positive or negative, use rand() % 2 and if it is not equal to zero, then multiply m_vx by -1
+    m_vx = rand() % 2 ? rand() % 401 + 100 : -1 * (rand() % 401 + 100);
+    m_vy = rand() % 401 + 100;
+
+    // Assign m_color1 and m_color2 with Colors 
+        // I made m_color1 whiteand m_color2 completely random, but you can experiment here
+    m_color1 = Color::Red;
+    m_color2 = Color::White;
+
+    // Now we will generate numPoint vertices by sweeping a circular arc with randomized radii.
+
+    // Initialize theta to an angle between [0: PI/ 2]
+    float theta = (((float)rand() / (RAND_MAX)) * M_PI) / 2;
+    // Initialize dTheta to 2 * PI / (numPoints - 1);
+        // This is the amount we will rotate per vertex
+        // We divide by numPoints - 1 because we want the last vertex to overlap with the first so we don't leave an open edge
+    float dTheta = 2 * M_PI / (numPoints - 1);
+
+    // Loop from j up to numPoints (I use i instead of j)
+    for (int i = 0; i < numPoints; i++)
+    {
+        // Declare local variables r, dx, and dy
+        int r, dx, dy;
+        // Assign a random number between [20:80] to r (you can try a different range here)
+        r = rand() % 61 + 20;
+        // dx = r * cos(theta)
+        dx = r * cos(theta);
+        // dy = r * sin(theta)
+        dy = r * sin(theta);
+
+        // Assign the Cartesian coordinate of the newly generated vertex to m_A:
+            // m_A(0, j) = m_centerCoordinate.x + dx;
+            // m_A(1, j) = m_centerCoordinate.y + dy;
+        m_A(0, i) = m_centerCoordinate.x + dx;
+        m_A(1, i) = m_centerCoordinate.y + dy;
+
+        // Increment theta by dTheta to move it to the next location for the next iteration of the loop
+        theta += dTheta;
+    }
 }
 
-void Particle::draw(RenderTarget& target, RenderStates states) const
+void Particle::draw(RenderTarget & target, RenderStates states) const
 {
 
 }
@@ -25,7 +103,7 @@ void Particle::rotate(double theta)
 
 }
 
-void scale(double c)
+void Particle::scale(double c)
 {
 
 }

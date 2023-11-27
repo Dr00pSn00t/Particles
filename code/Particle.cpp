@@ -193,7 +193,25 @@ void Particle::rotate(double theta)
 
 void Particle::scale(double c)
 {
+    /* Scaling is also derived to scale coordinates relative to their distance from the origin.
+       So we will also have to temporarily shift back to the origin here before scaling : */
 
+    // Store the value of m_centerCoordinate in a Vector2f temp
+    Vector2f temp = m_centerCoordinate;
+
+    // Call translate(-m_centerCoordinate.x, -m_centerCoordinate.y);
+        // This will shift our particle's center, wherever it is, back to the origin
+    translate(-m_centerCoordinate.x, -m_centerCoordinate.y);
+
+    // Construct a ScalingMatrix S with the specified scaling multiplier c
+    ScalingMatrix S(c);
+
+    // Multiply it by m_A as m_A = S * m_A
+    m_A = S * m_A;
+
+    // Shift our particle back to its original center: 
+        // translate(temp.x, temp.y);
+    translate(temp.x, temp.y);
 }
 
 // ************************************************************

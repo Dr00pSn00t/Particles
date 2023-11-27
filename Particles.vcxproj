@@ -110,6 +110,7 @@
     <ClCompile Include="code\Engine.cpp" />
     <ClCompile Include="code\main.cpp" />
     <ClCompile Include="code\Particle.cpp" />
+    <ClCompile Include="Matrices.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="code\Engine.h" />

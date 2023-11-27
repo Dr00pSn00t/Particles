@@ -121,7 +121,34 @@ void Particle::draw(RenderTarget & target, RenderStates states) const
 
 void Particle::update(float dt)
 {
+    // Subtract dt from m_ttl
+    m_ttl -= dt;
 
+    // Call rotate with an angle of dt * m_radiansPerSec
+    rotate(dt * m_radiansPerSec);
+
+    // Call scale using the global constant SCALE from Particle.h 
+        // SCALE will effectively act as the percentage to scale per frame
+        // 0.999 experimentally seemed to shrink the particle at a nice speed that wasn't too fast or too slow (you can change this)
+    scale(SCALE);
+
+    // Next we will calculate how far to shift / translate our particle, using distance (dx,dy) 
+        
+    // Declare local float variables dx and dy
+    float dx, dy;
+    // Assign m_vx * dt to dx
+    dx = m_vx * dt;
+
+    // The vertical velocity should change by some gravitational constant G, also experimentally determined and defined in Particle.h
+        // This will allow the particle to travel up then fall down as if having an initial upward velocity and then getting pulled down by gravity
+
+    // Subtract G * dt from m_vy
+    m_vy -= G * dt;
+    // Assign m_vy * dt to dy
+    dy = m_vy * dt;
+
+    // Call translate using dx,dy as arguments
+    translate(dx, dy);
 }
 
 void Particle::translate(double xShift, double yShift)

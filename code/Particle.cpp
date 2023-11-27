@@ -168,7 +168,27 @@ void Particle::translate(double xShift, double yShift)
 
 void Particle::rotate(double theta)
 {
+    /* Since the rotation matrix we will use is algebraically derived to rotate coordinates about the origin,
+       we will temporarily shift our particle to the origin before rotating it */
 
+    // Store the value of m_centerCoordinate in a Vector2f temp
+    Vector2f temp = m_centerCoordinate;
+
+    // Call translate(-m_centerCoordinate.x, -m_centerCoordinate.y);
+        // This will shift our particle's center, wherever it is, back to the origin
+    translate(-m_centerCoordinate.x, -m_centerCoordinate.y);
+
+    // Construct a RotationMatrix R with the specified angle of rotation theta
+    RotationMatrix R(theta);
+
+    // Multiply it by m_A as m_A = R * m_A
+        /* Note: make sure to left-multiply r, as matrix multiplication is not commutative
+           due to the fact that it multiplies the lvalue's rows into the rvalue's columns. */
+    m_A = R * m_A;
+
+    // Shift our particle back to its original center: 
+        // translate(temp.x, temp.y);
+    translate(temp.x, temp.y);
 }
 
 void Particle::scale(double c)

@@ -83,9 +83,40 @@ Particle::Particle(RenderTarget& target, int numPoints, Vector2i mouseClickPosit
     }
 }
 
+// This function overrides the virtual function from sf::Drawable to allow our draw function to polymorph
+// To draw, we will convert our Cartesian matrix coordinates from m_A to pixel coordinates in a VertexArray of primitive type TriangleFan 
 void Particle::draw(RenderTarget & target, RenderStates states) const
 {
+    // Construct a VertexArray named lines 
+        // Its arguments are TriangleFan, and the number of points numPoints + 1
+        // The + 1 is to account for the center as shown above
+    VertexArray lines(TriangleFan, m_numPoints + 1);
 
+    // Declare a local Vector2f named center
+        // This will be used to store the location on the monitor of the center of our particle
+        // Assign it with the mapping of m_centerCoordinate from Cartesian to pixel / monitor coordinates using mapCoordsToPixel
+    Vector2f center = static_cast<Vector2f>(target.mapCoordsToPixel(m_centerCoordinate, target.getView())); // mapCoordsToPixel returns a Vector2i
+
+    // Assign lines[0].position with center
+    // Assign lines[0].color with m_color
+        /* This will assign m_color to the center of our particle.If the outer colors are different,
+           the engine will automatically create a cool looking smooth color gradient between the two colors */
+    lines[0].position = center;
+    lines[0].color = m_color1;
+
+    // Loop i from 1 up to and including m_numPoints
+        // Note that the index in lines is 1-off from the index in m_A because lines must contain the pixel coordinate for the center as its first element
+    for (int i = 1; i <= m_numPoints; i++)
+    {
+        // Assign lines[i].position with the coordinate from column i - 1 in m_A, mapped from Cartesian to pixel coordinates using mapCoordsToPixel
+        // Assign lines[i].color with m_Color2
+        lines[i].position = static_cast<Vector2f>(target.mapCoordsToPixel(Vector2f(m_A(0, i - 1), m_A(1, i - 1)), target.getView()));
+        lines[i].color = m_color2;
+    }
+
+    // When the loop is finished, draw the VertexArray :
+        // target.draw(lines)
+    target.draw(lines);
 }
 
 void Particle::update(float dt)

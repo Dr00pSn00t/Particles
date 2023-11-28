@@ -48,8 +48,14 @@ Particle::Particle(RenderTarget& target, int numPoints, Vector2i mouseClickPosit
 
     // Assign m_color1 and m_color2 with Colors 
         // I made m_color1 whiteand m_color2 completely random, but you can experiment here
-    m_color1 = Color::Red;
-    m_color2 = Color::White;
+
+    // A random color from a selection for m_color1
+    vector<Color> colors1{  Color::Red, Color::Yellow, Color::Magenta, };
+    m_color1 = colors1[rand() % colors1.size()];
+
+    // A random color from a selection for m_color2
+    vector<Color> colors2{ Color::White, Color::Black, Color::Green, Color::Blue, Color::Cyan };
+    m_color2 = colors2[rand() % colors2.size()];
 
     // Now we will generate numPoint vertices by sweeping a circular arc with randomized radii.
 

@@ -27,7 +27,6 @@ Particle::Particle(RenderTarget& target, int numPoints, Vector2i mouseClickPosit
     /* m_cartesianPlane will be used to map between monitor pixel coordinates, that are 
        centered at (960, 540) for a 1080p monitor, to Cartesian coordinates that are centered 
        about the origin (0,0), so our Matrix algebra will work correctly */
-
     // Call setCenter(0,0)
     m_cartesianPlane.setCenter(0, 0);
 
@@ -133,12 +132,12 @@ void Particle::update(float dt)
     // Call rotate with an angle of dt * m_radiansPerSec
     rotate(dt * m_radiansPerSec);
 
-    // Call scale using the global constant SCALE from Particle.h 
+    // Call scale using the global constant SCALE from Particle.h
         // SCALE will effectively act as the percentage to scale per frame
         // 0.999 experimentally seemed to shrink the particle at a nice speed that wasn't too fast or too slow (you can change this)
     scale(SCALE);
 
-    // Next we will calculate how far to shift / translate our particle, using distance (dx,dy) 
+    // Next we will calculate how far to shift / translate our particle, using distance (dx,dy)
         
     // Declare local float variables dx and dy
     float dx, dy;

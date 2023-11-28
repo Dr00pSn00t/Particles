@@ -28,11 +28,9 @@ void Engine::run()
     while (m_Window.isOpen())
     {
         // Restart the clock (this will return the time elapsed since the last frame)
-        clock.restart();
-
         // Call input, update, draw
         input();
-        update(clock.getElapsedTime().asSeconds());
+        update(clock.restart().asSeconds());
         draw();
     }
 }
@@ -40,21 +38,20 @@ void Engine::run()
 // Poll the Windows event queue 
 void Engine::input()
 {
-    // Handle the Escape key pressed and closed events so your program can exit
-    if (Keyboard::isKeyPressed(Keyboard::Escape))
-    {
-        m_Window.close();
-    }
-
     Event event;
     while (m_Window.pollEvent(event))
     {
-        if (event.type == sf::Event::Closed) m_Window.close();
 
-        if (event.type == sf::Event::MouseButtonPressed)
+        // Handle the Escape key pressed and closed events so your program can exit
+        if (Keyboard::isKeyPressed(Keyboard::Escape))
+        {
+            m_Window.close();
+        }
+        if (event.type == Event::Closed) m_Window.close();
+        if (event.type == Event::MouseButtonPressed)
         {
             // Handle the left mouse button pressed event 
-            if (event.mouseButton.button == sf::Mouse::Left)
+            if (event.mouseButton.button == Mouse::Left)
             {
                 // construct a number of (5) particles
                 for (int i = 0; i < rand() % 6 + 3; i++)
@@ -64,14 +61,8 @@ void Engine::input()
                     m_particles.push_back(Particle(m_Window, rand() % 31 + 30, Vector2i(event.mouseButton.x, event.mouseButton.y)));
                 }
             }
-            if (event.mouseButton.button == sf::Mouse::Right)
-            {
-
-            }
         }
     }
-
-
 }
 
 // The general idea here is to loop through m_particles and call update on each Particle in the vector whose ttl (time to live) has not expired

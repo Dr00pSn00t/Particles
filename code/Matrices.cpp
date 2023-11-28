@@ -35,7 +35,7 @@ namespace Matrices
 	Matrix operator*(const Matrix& a, const Matrix& b)
 	{
 		int colsA = a.getCols();
-		int rowsB = b.getRows();
+		//int rowsB = b.getRows();
 
 		//if (!(colsA == rowsB)) throw runtime_error("Error: dimensions must agree");
 

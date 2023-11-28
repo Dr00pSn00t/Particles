@@ -22,7 +22,7 @@ Particle::Particle(RenderTarget& target, int numPoints, Vector2i mouseClickPosit
     // Initialize m_radiansPerSec to a random angular velocity in the range [0:PI]
         // You can generate a random fraction between [0:1) by calling (float)rand() / (RAND_MAX)
         // Multiply this fraction by PI (this is a constant for pi, declared in Particle.h
-    m_radiansPerSec = ((float)rand() / (RAND_MAX)) * M_PI;
+    m_radiansPerSec = rand() % 2 ? ((float)rand() / (RAND_MAX)) * M_PI : -1 * (((float)rand() / (RAND_MAX)) * M_PI);
 
     /* m_cartesianPlane will be used to map between monitor pixel coordinates, that are 
        centered at (960, 540) for a 1080p monitor, to Cartesian coordinates that are centered 

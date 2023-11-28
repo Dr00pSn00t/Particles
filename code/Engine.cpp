@@ -37,20 +37,31 @@ void Engine::run()
     }
 }
 
+// Poll the Windows event queue 
 void Engine::input()
 {
+    // Handle the Escape key pressed and closed events so your program can exit
+    if (Keyboard::isKeyPressed(Keyboard::Escape))
+    {
+        m_Window.close();
+    }
+
     Event event;
     while (m_Window.pollEvent(event))
     {
         if (event.type == sf::Event::Closed) m_Window.close();
+
         if (event.type == sf::Event::MouseButtonPressed)
         {
+            // Handle the left mouse button pressed event 
             if (event.mouseButton.button == sf::Mouse::Left)
             {
                 // construct a number of (5) particles
-                for (int i = 0; i < 5; i++)
+                for (int i = 0; i < rand() % 6 + 3; i++)
                 {
-                    m_particles.push_back(Particle(m_Window, rand() % 26 + 25, Vector2i(event.mouseButton.x, event.mouseButton.y)));
+                    // numPoints is a random number in the range [25:50] (you can experiment with this too)
+                    // Pass the position of the mouse click into the constructor
+                    m_particles.push_back(Particle(m_Window, rand() % 31 + 30, Vector2i(event.mouseButton.x, event.mouseButton.y)));
                 }
             }
             if (event.mouseButton.button == sf::Mouse::Right)
@@ -59,34 +70,51 @@ void Engine::input()
             }
         }
     }
-    if (Keyboard::isKeyPressed(Keyboard::Escape))
-    {
-        m_Window.close();
-    }
+
+
 }
 
+// The general idea here is to loop through m_particles and call update on each Particle in the vector whose ttl (time to live) has not expired
+    // If a particle's ttl has expired, it must be erased from the vector
 void Engine::update(float dtAsSeconds)
 {
+    // This is best done with an iterator - based for - loop
+        // Don't automatically increment the iterator for each iteration
     for (vector<Particle>::iterator iterator = m_particles.begin(); iterator != m_particles.end();)
     {
+        // if getTTL() > 0.0 
         if (iterator->getTTL() > 0.0)
-        {
+        {   
+            // Call update on that Particle
             iterator->update(dtAsSeconds);
+            // increment the iterator
             iterator++;
         }
-        else
+        else // else
         {
+            // erase the element the iterator points to
+            // erase returns an iterator that points to the next element after deletion, or end if it is the end of the vector
+                // Assign the iterator to this return value
             iterator = m_particles.erase(iterator);
+
+            // Do not increment the iterator (if you do you might increment past the end of the vector after you delete the last element)
         }
     }
 }
 
 void Engine::draw()
 {
+    // clear the window
     m_Window.clear();
+
+    // Loop through each Particle in m_Particles 
     for (Particle particle : m_particles)
     {
+        // Pass each element into m_Window.draw()
+        // Note:  This will use polymorphism to call your Particle::draw() function
         m_Window.draw(particle);
     }
+
+    // display the window
     m_Window.display();
 }

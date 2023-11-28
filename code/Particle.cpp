@@ -24,10 +24,10 @@ Particle::Particle(RenderTarget& target, int numPoints, Vector2i mouseClickPosit
         // Multiply this fraction by PI (this is a constant for pi, declared in Particle.h
     m_radiansPerSec = ((float)rand() / (RAND_MAX)) * M_PI;
 
-    /* - m_cartesianPlane will be used to map between monitor pixel coordinates, that are 
-    *  centered at (960, 540) for a 1080p monitor, to Cartesian coordinates that are centered 
-    *  about the origin (0,0), so our Matrix algebra will work correctly
-    */
+    /* m_cartesianPlane will be used to map between monitor pixel coordinates, that are 
+       centered at (960, 540) for a 1080p monitor, to Cartesian coordinates that are centered 
+       about the origin (0,0), so our Matrix algebra will work correctly */
+
     // Call setCenter(0,0)
     m_cartesianPlane.setCenter(0, 0);
 

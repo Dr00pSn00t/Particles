@@ -54,11 +54,11 @@ void Engine::input()
             if (event.mouseButton.button == Mouse::Left)
             {
                 // construct a number of (5) particles
-                for (int i = 0; i < rand() % 6 + 3; i++)
+                for (int i = 0; i < rand() % 10 + 8; i++)
                 {
                     // numPoints is a random number in the range [25:50] (you can experiment with this too)
                     // Pass the position of the mouse click into the constructor
-                    m_particles.push_back(Particle(m_Window, rand() % 31 + 30, Vector2i(event.mouseButton.x, event.mouseButton.y)));
+                    m_particles.push_back(Particle(m_Window, rand() % 40 + 45, Vector2i(event.mouseButton.x, event.mouseButton.y)));
                 }
             }
         }
